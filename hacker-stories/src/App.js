@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
 
-const List = ({ list }) => {
-  return list.map((item) => (
-    <div key={item.objectID}>
+const ListItem = ({ title, url, author, num_comments, points }) => {
+  return (
+    <div>
       <span>
-        <a href={item.url} target='_blank' rel='noopener noreferrer'>
-          {item.title}
+        <a href={url} target='_blank' rel='noopener noreferrer'>
+          {title}
         </a>{' '}
-        by {item.author}
+        by {author}
       </span>
       <br />
-      <span>Comments: {item.num_comments}</span>
+      <span>Comments: {num_comments}</span>
       <br />
-      <span>Points: {item.points}</span>
+      <span>Points: {points}</span>
       <hr />
     </div>
+  );
+};
+
+const List = ({ list }) => {
+  return list.map(({ objectID, ...item }) => (
+    <ListItem key={objectID} {...item} />
   ));
 };
 
