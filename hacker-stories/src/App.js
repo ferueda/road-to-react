@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const List = ({ list }) => {
   return list.map((item) => (
     <div key={item.objectID}>
       <span>
-        <a href={item.url} target='_blank' rel='noopener'>
+        <a href={item.url} target='_blank' rel='noopener noreferrer'>
           {item.title}
         </a>{' '}
         by {item.author}
@@ -18,7 +18,24 @@ const List = ({ list }) => {
   ));
 };
 
+const Search = ({ search, onSearch }) => {
+  return (
+    <div>
+      <label htmlFor='search'>Search: </label>
+      <input id='search' type='text' value={search} onChange={onSearch} />
+      <p>
+        Searching for <strong>{search}</strong>
+      </p>
+    </div>
+  );
+};
+
 const App = () => {
+  const [search, setSearch] = useState('');
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
   const stories = [
     {
       title: 'React',
@@ -38,17 +55,16 @@ const App = () => {
     },
   ];
 
-  const handleChange = (event) => {
-    console.log(event);
-  };
-
   return (
     <div className='App'>
       <h1>My Hacker Stories</h1>
-      <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' onChange={handleChange} />
+      <Search search={search} onSearch={handleSearch} />
       <hr />
-      <List list={stories} />
+      <List
+        list={stories.filter((story) =>
+          story.title.toLowerCase().includes(search.toLowerCase())
+        )}
+      />
     </div>
   );
 };
