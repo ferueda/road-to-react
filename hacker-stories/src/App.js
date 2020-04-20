@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ListItem = ({ title, url, author, num_comments, points }) => {
   return (
@@ -37,11 +37,6 @@ const Search = ({ search, onSearch }) => {
 };
 
 const App = () => {
-  const [search, setSearch] = useState('');
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
-  };
-
   const stories = [
     {
       title: 'React',
@@ -60,6 +55,19 @@ const App = () => {
       objectID: 1,
     },
   ];
+
+  const [search, setSearch] = useState(localStorage.getItem('search') || '');
+
+  useEffect(() => {
+    localStorage.setItem('search', search);
+  }, [search]);
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    localStorage.setItem('search', event.target.value);
+  };
+
+  console.log('rendered');
 
   return (
     <div className='App'>
