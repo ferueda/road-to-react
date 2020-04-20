@@ -36,6 +36,16 @@ const Search = ({ search, onSearch }) => {
   );
 };
 
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = useState(localStorage.getItem(key) || initialState);
+
+  useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
 const App = () => {
   const stories = [
     {
@@ -56,15 +66,10 @@ const App = () => {
     },
   ];
 
-  const [search, setSearch] = useState(localStorage.getItem('search') || '');
-
-  useEffect(() => {
-    localStorage.setItem('search', search);
-  }, [search]);
+  const [search, setSearch] = useSemiPersistentState('search', 'React');
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
-    localStorage.setItem('search', event.target.value);
   };
 
   console.log('rendered');
