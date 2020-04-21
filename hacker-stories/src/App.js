@@ -26,13 +26,13 @@ const List = ({ list }) => {
 
 const Search = ({ search, onSearch }) => {
   return (
-    <div>
+    <React.Fragment>
       <label htmlFor='search'>Search: </label>
       <input id='search' type='text' value={search} onChange={onSearch} />
       <p>
         Searching for <strong>{search}</strong>
       </p>
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -66,7 +66,7 @@ const App = () => {
     },
   ];
 
-  const [search, setSearch] = useSemiPersistentState('search', 'React');
+  const [search, setSearch] = useSemiPersistentState('search', '');
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
