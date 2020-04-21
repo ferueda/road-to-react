@@ -24,14 +24,11 @@ const List = ({ list }) => {
   ));
 };
 
-const Search = ({ search, onSearch }) => {
+const InputWithLabel = ({ type = 'text', id, label, value, onInputChange }) => {
   return (
     <React.Fragment>
-      <label htmlFor='search'>Search: </label>
-      <input id='search' type='text' value={search} onChange={onSearch} />
-      <p>
-        Searching for <strong>{search}</strong>
-      </p>
+      <label htmlFor={id}>{label}: </label>
+      <input id={id} type={type} value={value} onChange={onInputChange} />
     </React.Fragment>
   );
 };
@@ -77,7 +74,13 @@ const App = () => {
   return (
     <div className='App'>
       <h1>My Hacker Stories</h1>
-      <Search search={search} onSearch={handleSearch} />
+      <InputWithLabel
+        type='text'
+        value={search}
+        id='search'
+        label='Search'
+        onInputChange={handleSearch}
+      />
       <hr />
       <List
         list={stories.filter((story) =>
