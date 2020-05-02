@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const ListItem = ({ title, url, author, num_comments, points }) => {
   return (
@@ -24,11 +24,32 @@ const List = ({ list }) => {
   ));
 };
 
-const InputWithLabel = ({ type = 'text', id, label, value, onInputChange }) => {
+const InputWithLabel = ({
+  type = 'text',
+  id,
+  children,
+  value,
+  onInputChange,
+  isFocused,
+}) => {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
+
   return (
     <React.Fragment>
-      <label htmlFor={id}>{label}: </label>
-      <input id={id} type={type} value={value} onChange={onInputChange} />
+      <label htmlFor={id}>{children}</label>
+      <input
+        ref={inputRef}
+        id={id}
+        type={type}
+        value={value}
+        onChange={onInputChange}
+      />
     </React.Fragment>
   );
 };
@@ -78,9 +99,11 @@ const App = () => {
         type='text'
         value={search}
         id='search'
-        label='Search'
+        isFocused
         onInputChange={handleSearch}
-      />
+      >
+        <strong>Search: </strong>
+      </InputWithLabel>
       <hr />
       <List
         list={stories.filter((story) =>
