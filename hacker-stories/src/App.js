@@ -88,9 +88,21 @@ const initialStories = [
   },
 ];
 
+const getAsyncStories = () => {
+  return new Promise((resolve) => {
+    return setTimeout(() => {
+      resolve({ data: { stories: initialStories } });
+    }, 2000);
+  });
+};
+
 const App = () => {
   const [search, setSearch] = useSemiPersistentState('search', '');
-  const [stories, setStories] = useState(initialStories);
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    getAsyncStories().then((res) => setStories(res.data.stories));
+  }, []);
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
