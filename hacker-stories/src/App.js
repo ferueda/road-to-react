@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const ListItem = ({ title, url, author, num_comments, points }) => {
+const ListItem = ({ item, onRemoveItem }) => {
+  const { title, url, author, num_comments, points } = item;
+
   return (
     <div>
       <span>
@@ -13,14 +15,17 @@ const ListItem = ({ title, url, author, num_comments, points }) => {
       <span>Comments: {num_comments}</span>
       <br />
       <span>Points: {points}</span>
+      <button type='button' onClick={() => onRemoveItem(item)}>
+        Dismiss
+      </button>
       <hr />
     </div>
   );
 };
 
-const List = ({ list }) => {
-  return list.map(({ objectID, ...item }) => (
-    <ListItem key={objectID} {...item} />
+const List = ({ list, onRemoveItem }) => {
+  return list.map((item) => (
+    <ListItem key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
   ));
 };
 
@@ -64,30 +69,43 @@ const useSemiPersistentState = (key, initialState) => {
   return [value, setValue];
 };
 
-const App = () => {
-  const stories = [
-    {
-      title: 'React',
-      url: 'https://reactjs.org/',
-      author: 'Jordan Walke',
-      num_comments: 3,
-      points: 4,
-      objectID: 0,
-    },
-    {
-      title: 'Redux',
-      url: 'https://redux.js.org/',
-      author: 'Dan Abramov, Andrew Clark',
-      num_comments: 2,
-      points: 5,
-      objectID: 1,
-    },
-  ];
+const initialStories = [
+  {
+    title: 'React',
+    url: 'https://reactjs.org/',
+    author: 'Jordan Walke',
+    num_comments: 3,
+    points: 4,
+    objectID: 0,
+  },
+  {
+    title: 'Redux',
+    url: 'https://redux.js.org/',
+    author: 'Dan Abramov, Andrew Clark',
+    num_comments: 2,
+    points: 5,
+    objectID: 1,
+  },
+];
 
+const App = () => {
   const [search, setSearch] = useSemiPersistentState('search', '');
+  const [stories, setStories] = useState(initialStories);
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
+  };
+
+  const searchedStories = stories.filter((story) =>
+    story.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleRemoveStory = (item) => {
+    const newStories = stories.filter(
+      (story) => item.objectID !== story.objectID
+    );
+
+    setStories(newStories);
   };
 
   console.log('rendered');
@@ -105,11 +123,7 @@ const App = () => {
         <strong>Search: </strong>
       </InputWithLabel>
       <hr />
-      <List
-        list={stories.filter((story) =>
-          story.title.toLowerCase().includes(search.toLowerCase())
-        )}
-      />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
     </div>
   );
 };
