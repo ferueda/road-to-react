@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useReducer,
+  useCallback,
+} from 'react';
 
 const ListItem = ({ item, onRemoveItem }) => {
   const { title, url, author, num_comments, points } = item;
@@ -102,22 +108,21 @@ const storiesReducer = (state, action) => {
   }
 };
 
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 const App = () => {
   const [search, setSearch] = useSemiPersistentState('search', '');
+  const [url, setUrl] = useState(`${API_ENDPOINT}${search}`);
   const [stories, dispatchStories] = useReducer(storiesReducer, {
     data: [],
     isLoading: false,
     isError: false,
   });
 
-  useEffect(() => {
-    const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
-
-    if (!search === '') return;
-
+  const handleFetchStories = useCallback(() => {
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(`${API_ENDPOINT}${search}`)
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         dispatchStories({
@@ -126,10 +131,18 @@ const App = () => {
         });
       })
       .catch(() => dispatchStories({ type: 'STORIES_FETCH_FAILURE' }));
-  }, [search]);
+  }, [url]);
 
-  const handleSearch = (event) => {
+  useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
+
+  const handleSearchInput = (event) => {
     setSearch(event.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${search}`);
   };
 
   const handleRemoveStory = (item) => {
@@ -149,10 +162,13 @@ const App = () => {
         value={search}
         id='search'
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search: </strong>
       </InputWithLabel>
+      <button type='button' disabled={!search} onClick={handleSearchSubmit}>
+        Search
+      </button>
       <hr />
       {stories.isError && <p>Something went wrong...</p>}
       {stories.isLoading ? (
