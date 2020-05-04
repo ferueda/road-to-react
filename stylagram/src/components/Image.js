@@ -12,16 +12,19 @@ const ImgContainer = styled.div`
   cursor: pointer;
   transition: 0.5s all ease-in;
 `;
+
 const ImgIcons = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   margin-right: 20px;
+
   svg {
     margin-right: 10px;
   }
 `;
+
 const ImgMeta = styled.div`
   display: none;
   align-items: center;
@@ -32,17 +35,19 @@ const ImgMeta = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
+
   ${ImgContainer}:hover & {
     display: flex !important;
   }
 `;
+
 const Img = styled.img`
   cursor: pointer;
   width: 100%;
 `;
 
-function Image(props) {
-  const item = props.image;
+function Image({ image }) {
+  const item = image;
   return (
     <ImgContainer>
       <Img src={item.source} />

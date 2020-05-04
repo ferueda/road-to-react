@@ -39,6 +39,41 @@ const feedsource = [
     isVideo: false,
     id: 4,
   },
+  {
+    source: 'https://picsum.photos/87',
+    likes: '30',
+    comments: '4',
+    isVideo: false,
+    id: 4,
+  },
+  {
+    source: 'https://picsum.photos/121',
+    likes: '30',
+    comments: '4',
+    isVideo: false,
+    id: 4,
+  },
+  {
+    source: 'https://picsum.photos/188',
+    likes: '30',
+    comments: '4',
+    isVideo: false,
+    id: 4,
+  },
+  {
+    source: 'https://picsum.photos/209',
+    likes: '30',
+    comments: '4',
+    isVideo: false,
+    id: 4,
+  },
+  {
+    source: 'https://picsum.photos/133',
+    likes: '30',
+    comments: '4',
+    isVideo: false,
+    id: 4,
+  },
 ];
 
 const ProfileContainer = styled.div`
