@@ -1,79 +1,10 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useReducer,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import axios from 'axios';
 
-const ListItem = ({ item, onRemoveItem }) => {
-  const { title, url, author, num_comments, points } = item;
+import SearchForm from './components/SearchForm';
+import List from './components/List';
 
-  return (
-    <div>
-      <span>
-        <a href={url} target='_blank' rel='noopener noreferrer'>
-          {title}
-        </a>{' '}
-        by {author}
-      </span>
-      <br />
-      <span>Comments: {num_comments}</span>
-      <br />
-      <span>Points: {points}</span>
-      <button type='button' onClick={() => onRemoveItem(item)}>
-        Dismiss
-      </button>
-      <hr />
-    </div>
-  );
-};
-
-const List = ({ list, onRemoveItem }) => {
-  return list.map((item) => (
-    <ListItem key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
-  ));
-};
-
-const InputWithLabel = ({
-  type = 'text',
-  id,
-  children,
-  value,
-  onInputChange,
-  isFocused,
-}) => {
-  const inputRef = useRef();
-
-  useEffect(() => {
-    if (isFocused && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isFocused]);
-
-  return (
-    <React.Fragment>
-      <label htmlFor={id}>{children}</label>
-      <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        value={value}
-        onChange={onInputChange}
-      />
-    </React.Fragment>
-  );
-};
-
-const useSemiPersistentState = (key, initialState) => {
-  const [value, setValue] = useState(localStorage.getItem(key) || initialState);
-
-  useEffect(() => {
-    localStorage.setItem(key, value);
-  }, [value, key]);
-
-  return [value, setValue];
-};
+import { useSemiPersistentState } from './hooks/useSemiPersistentState';
 
 const storiesReducer = (state, action) => {
   switch (action.type) {
@@ -119,18 +50,20 @@ const App = () => {
     isError: false,
   });
 
-  const handleFetchStories = useCallback(() => {
+  const handleFetchStories = useCallback(async () => {
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        dispatchStories({
-          type: 'STORIES_FETCH_SUCCESS',
-          payload: data.hits,
-        });
-      })
-      .catch(() => dispatchStories({ type: 'STORIES_FETCH_FAILURE' }));
+    try {
+      const res = await axios.get(url);
+      const data = res.data;
+
+      dispatchStories({
+        type: 'STORIES_FETCH_SUCCESS',
+        payload: data.hits,
+      });
+    } catch {
+      dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
+    }
   }, [url]);
 
   useEffect(() => {
@@ -141,7 +74,8 @@ const App = () => {
     setSearch(event.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
     setUrl(`${API_ENDPOINT}${search}`);
   };
 
@@ -157,18 +91,11 @@ const App = () => {
   return (
     <div className='App'>
       <h1>My Hacker Stories</h1>
-      <InputWithLabel
-        type='text'
-        value={search}
-        id='search'
-        isFocused
-        onInputChange={handleSearchInput}
-      >
-        <strong>Search: </strong>
-      </InputWithLabel>
-      <button type='button' disabled={!search} onClick={handleSearchSubmit}>
-        Search
-      </button>
+      <SearchForm
+        search={search}
+        handleSearchInput={handleSearchInput}
+        handleSearchSubmit={handleSearchSubmit}
+      />
       <hr />
       {stories.isError && <p>Something went wrong...</p>}
       {stories.isLoading ? (
