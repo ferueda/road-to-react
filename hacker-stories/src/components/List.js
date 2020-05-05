@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { ReactComponent as Check } from './check.svg';
 
 const ListItem = ({ item, onRemoveItem }) => {
   const { title, url, author, num_comments, points } = item;
@@ -16,17 +17,18 @@ const ListItem = ({ item, onRemoveItem }) => {
       <br />
       <span>Points: {points}</span>
       <button type='button' onClick={() => onRemoveItem(item)}>
-        Dismiss
+        Dismiss <Check height='14px' width='14px' />
       </button>
       <hr />
     </div>
   );
 };
 
-const List = ({ list, onRemoveItem }) => {
+const List = memo(({ list, onRemoveItem }) => {
+  console.log('B:List');
   return list.map((item) => (
     <ListItem key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
   ));
-};
+});
 
 export default List;

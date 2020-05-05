@@ -1,0 +1,4 @@
+button:hover > svg > g {
+  fill: #fff;
+  stroke: #fff;
+}

@@ -1,5 +1,12 @@
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useCallback,
+  useMemo,
+} from 'react';
 import axios from 'axios';
+import './App.css';
 
 import SearchForm from './components/SearchForm';
 import List from './components/List';
@@ -41,6 +48,12 @@ const storiesReducer = (state, action) => {
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
+const getSumComments = (stories) => {
+  console.log('C');
+
+  return stories.data.reduce((acc, value) => acc + value.num_comments, 0);
+};
+
 const App = () => {
   const [search, setSearch] = useSemiPersistentState('search', '');
   const [url, setUrl] = useState(`${API_ENDPOINT}${search}`);
@@ -49,6 +62,8 @@ const App = () => {
     isLoading: false,
     isError: false,
   });
+
+  const sumComments = useMemo(() => getSumComments(stories), [stories]);
 
   const handleFetchStories = useCallback(async () => {
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
@@ -79,18 +94,18 @@ const App = () => {
     setUrl(`${API_ENDPOINT}${search}`);
   };
 
-  const handleRemoveStory = (item) => {
+  const handleRemoveStory = useCallback((item) => {
     dispatchStories({
       type: 'REMOVE_STORY',
       payload: item,
     });
-  };
+  }, []);
 
-  console.log('rendered');
+  console.log('B:App');
 
   return (
     <div className='App'>
-      <h1>My Hacker Stories</h1>
+      <h1>My Hacker Stories with {sumComments} comments</h1>
       <SearchForm
         search={search}
         handleSearchInput={handleSearchInput}
