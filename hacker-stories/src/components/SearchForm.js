@@ -49,4 +49,4 @@ const SearchForm = ({ handleSearchInput, search, handleSearchSubmit }) => {
   );
 };
 
-export default SearchForm;
+export default React.memo(SearchForm);

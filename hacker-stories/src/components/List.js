@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { ReactComponent as Check } from './check.svg';
 
-const ListItem = ({ item, onRemoveItem }) => {
+const ListItem = React.memo(({ item, onRemoveItem }) => {
   const { title, url, author, num_comments, points } = item;
 
   return (
@@ -22,13 +22,12 @@ const ListItem = ({ item, onRemoveItem }) => {
       <hr />
     </div>
   );
-};
+});
 
-const List = memo(({ list, onRemoveItem }) => {
-  console.log('B:List');
+const List = ({ list, onRemoveItem }) => {
   return list.map((item) => (
     <ListItem key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
   ));
-});
+};
 
-export default List;
+export default React.memo(List);

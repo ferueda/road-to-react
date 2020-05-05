@@ -48,11 +48,8 @@ const storiesReducer = (state, action) => {
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-const getSumComments = (stories) => {
-  console.log('C');
-
-  return stories.data.reduce((acc, value) => acc + value.num_comments, 0);
-};
+const getSumComments = (stories) =>
+  stories.data.reduce((acc, value) => acc + value.num_comments, 0);
 
 const App = () => {
   const [search, setSearch] = useSemiPersistentState('search', '');
@@ -85,14 +82,17 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleSearchInput = (event) => {
+  const handleSearchInput = useCallback((event) => {
     setSearch(event.target.value);
-  };
+  }, []);
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    setUrl(`${API_ENDPOINT}${search}`);
-  };
+  const handleSearchSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      setUrl(`${API_ENDPOINT}${search}`);
+    },
+    [search, API_ENDPOINT]
+  );
 
   const handleRemoveStory = useCallback((item) => {
     dispatchStories({
@@ -100,8 +100,6 @@ const App = () => {
       payload: item,
     });
   }, []);
-
-  console.log('B:App');
 
   return (
     <div className='App'>
