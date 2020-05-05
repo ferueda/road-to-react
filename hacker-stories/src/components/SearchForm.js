@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const InputWithLabel = ({
+export const InputWithLabel = ({
   type = 'text',
   id,
   children,

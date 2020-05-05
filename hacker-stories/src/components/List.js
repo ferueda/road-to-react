@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactComponent as Check } from './check.svg';
 
-const ListItem = React.memo(({ item, onRemoveItem }) => {
+export const ListItem = React.memo(({ item, onRemoveItem }) => {
   const { title, url, author, num_comments, points } = item;
 
   return (
