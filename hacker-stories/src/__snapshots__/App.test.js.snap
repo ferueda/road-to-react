@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListItem renders snapshot 1`] = `
+<div>
+  <span>
+    <a
+      href="https://reactjs.org/"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      React
+    </a>
+     
+    by 
+    Jordan Walke
+  </span>
+  <br />
+  <span>
+    Comments: 
+    3
+  </span>
+  <br />
+  <span>
+    Points: 
+    4
+  </span>
+  <button
+    onClick={[Function]}
+    type="button"
+  >
+    Dismiss 
+    <svg
+      height="14px"
+      width="14px"
+    >
+      check.svg
+    </svg>
+  </button>
+  <hr />
+</div>
+`;

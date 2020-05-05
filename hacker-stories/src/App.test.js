@@ -41,6 +41,11 @@ describe('ListItem', () => {
     expect(handleRemoveItem).toHaveBeenCalledTimes(1);
     expect(handleRemoveItem).toHaveBeenCalledWith(item);
   });
+
+  test('renders snapshot', () => {
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
 
 describe('List', () => {
